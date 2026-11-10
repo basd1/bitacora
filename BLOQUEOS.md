@@ -16,3 +16,7 @@ Enfoques probados:
 Un intento de ejecutar la prueba en el panel de terminal del usuario fue denegado por el clasificador, así que no se sabe si falla también ahí.
 Probable causa: AF_UNIX sockets bloqueados o rotos para los procesos de esta sesión en Windows (build 26300).
 Hipótesis a comprobar en un terminal normal: `java Selector.open()` y luego `.\gradlew.bat assembleDebug`.
+
+## Reintento durante los hitos 1-6
+
+`.\gradlew.bat --version` funciona (no necesita daemon), pero `.\gradlew.bat help --offline` falla con el mismo `IOException: Unable to establish loopback connection`. Por tanto los hitos 1 a 6 se escribieron sin compilar ni probar nada (ver `ESTADO.md` y `README.md`, "Known limitations").

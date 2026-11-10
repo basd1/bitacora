@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -47,6 +48,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -123,7 +127,11 @@ fun ListScreen(
                         body = stringResource(if (filtering) R.string.list_no_results_body else R.string.list_empty_body),
                     )
                 }
-                else -> LazyColumn(modifier = Modifier.fillMaxSize()) {
+                else -> LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    // Keeps the last row clear of the floating action button.
+                    contentPadding = PaddingValues(bottom = 88.dp),
+                ) {
                     items(state.items, key = { it.id }) { observation ->
                         ObservationRow(
                             observation = observation,
@@ -199,7 +207,7 @@ private fun ObservationRow(
 ) {
     val container = if (selected) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surface
     ListItem(
-        modifier = Modifier.clickable(onClick = onClick),
+        modifier = Modifier.clickable(onClickLabel = stringResource(R.string.action_open_observation), onClick = onClick),
         colors = ListItemDefaults.colors(containerColor = container),
         headlineContent = { Text(observation.title, maxLines = 1, overflow = TextOverflow.Ellipsis) },
         supportingContent = {
@@ -251,7 +259,10 @@ private fun Banner(text: String, onClick: () -> Unit, icon: (@Composable () -> U
     Surface(
         color = MaterialTheme.colorScheme.secondaryContainer,
         contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-        modifier = Modifier.fillMaxWidth().clickable(onClick = onClick),
+        modifier = Modifier
+            .fillMaxWidth()
+            .semantics { liveRegion = LiveRegionMode.Polite }
+            .clickable(onClickLabel = stringResource(R.string.action_open_status), onClick = onClick),
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),

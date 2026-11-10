@@ -31,6 +31,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.bastian.bitacora.R
@@ -97,7 +99,11 @@ fun ConflictScreen(
 private fun FieldConflictCard(field: ConflictFieldUi, onChoose: (Side) -> Unit) {
     OutlinedCard(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(stringResource(field.field.fieldLabelRes()), style = MaterialTheme.typography.titleSmall)
+            Text(
+                text = stringResource(field.field.fieldLabelRes()),
+                style = MaterialTheme.typography.titleSmall,
+                modifier = Modifier.semantics { heading() },
+            )
             Column(modifier = Modifier.selectableGroup()) {
                 ChoiceRow(
                     label = stringResource(R.string.conflict_keep_mine),

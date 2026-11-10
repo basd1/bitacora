@@ -86,4 +86,7 @@
     <string name="status_errors_title">Observaciones que el servidor rechazó</string>
     <string name="status_all_synced">Todo está sincronizado.</string>
     <string name="status_retry">Reintentar ahora</string>
+
+    <string name="action_open_observation">Abrir observación</string>
+    <string name="detail_empty">Selecciona una observación de la lista o añade una nueva.</string>
 </resources>
