@@ -7,14 +7,17 @@ import androidx.room.Room
 import dev.bastian.bitacora.BuildConfig
 import dev.bastian.bitacora.data.db.BitacoraDatabase
 import dev.bastian.bitacora.data.repo.DefaultObservationRepository
+import dev.bastian.bitacora.data.repo.DefaultSyncStatusRepository
 import dev.bastian.bitacora.data.sync.DataStoreSyncStore
 import dev.bastian.bitacora.data.sync.KtorSyncRemote
+import dev.bastian.bitacora.data.sync.ReconnectSyncTrigger
 import dev.bastian.bitacora.data.sync.SyncEngine
 import dev.bastian.bitacora.data.sync.SyncRemote
 import dev.bastian.bitacora.data.sync.SyncStore
 import dev.bastian.bitacora.data.sync.SyncWorker
 import dev.bastian.bitacora.data.sync.WorkManagerSyncScheduler
 import dev.bastian.bitacora.data.sync.createSyncHttpClient
+import dev.bastian.bitacora.data.system.ConnectivityNetworkMonitor
 import dev.bastian.bitacora.data.system.FilePhotoStorage
 import dev.bastian.bitacora.data.system.FrameworkLocationProvider
 import dev.bastian.bitacora.data.system.SystemClock
@@ -22,12 +25,15 @@ import dev.bastian.bitacora.data.system.UuidGenerator
 import dev.bastian.bitacora.domain.Clock
 import dev.bastian.bitacora.domain.IdGenerator
 import dev.bastian.bitacora.domain.LocationProvider
+import dev.bastian.bitacora.domain.NetworkMonitor
 import dev.bastian.bitacora.domain.ObservationRepository
 import dev.bastian.bitacora.domain.PhotoStorage
 import dev.bastian.bitacora.domain.SyncScheduler
+import dev.bastian.bitacora.domain.SyncStatusRepository
 import dev.bastian.bitacora.ui.conflict.ConflictViewModel
 import dev.bastian.bitacora.ui.edit.EditViewModel
 import dev.bastian.bitacora.ui.list.ListViewModel
+import dev.bastian.bitacora.ui.status.SyncStatusViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import java.io.File
@@ -64,6 +70,9 @@ val syncModule = module {
     single<SyncRemote> { KtorSyncRemote(get(), BuildConfig.SERVER_URL) }
     single<SyncScheduler> { WorkManagerSyncScheduler(androidContext()) }
     single { SyncEngine(get(), get(), get(), get()) }
+    single<NetworkMonitor> { ConnectivityNetworkMonitor(androidContext()) }
+    single<SyncStatusRepository> { DefaultSyncStatusRepository(get(), get(), get()) }
+    single { ReconnectSyncTrigger(get(), get()) }
     workerOf(::SyncWorker)
 }
 
@@ -71,6 +80,7 @@ val uiModule = module {
     viewModelOf(::ListViewModel)
     viewModelOf(::EditViewModel)
     viewModelOf(::ConflictViewModel)
+    viewModelOf(::SyncStatusViewModel)
 }
 
 val appModules = listOf(dataModule, syncModule, uiModule)

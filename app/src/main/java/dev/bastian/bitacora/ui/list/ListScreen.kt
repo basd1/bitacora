@@ -14,18 +14,23 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.CloudOff
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -48,7 +53,9 @@ import androidx.compose.ui.unit.dp
 import dev.bastian.bitacora.R
 import dev.bastian.bitacora.domain.Category
 import dev.bastian.bitacora.domain.Observation
+import dev.bastian.bitacora.domain.SyncState
 import dev.bastian.bitacora.ui.common.formatDateTime
+import dev.bastian.bitacora.ui.common.icon
 import dev.bastian.bitacora.ui.common.labelRes
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -63,6 +70,8 @@ fun ListScreen(
     onDelete: (String) -> Unit,
     onUndoDelete: () -> Unit,
     onDeletedPromptShown: () -> Unit,
+    onSyncNow: () -> Unit,
+    onOpenStatus: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -80,7 +89,19 @@ fun ListScreen(
 
     Scaffold(
         modifier = modifier,
-        topBar = { TopAppBar(title = { Text(stringResource(R.string.list_title)) }) },
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(R.string.list_title)) },
+                actions = {
+                    IconButton(onClick = onSyncNow, enabled = !state.isSyncing) {
+                        Icon(Icons.Default.Sync, contentDescription = stringResource(R.string.action_sync_now))
+                    }
+                    IconButton(onClick = onOpenStatus) {
+                        Icon(Icons.Default.Info, contentDescription = stringResource(R.string.action_open_status))
+                    }
+                },
+            )
+        },
         floatingActionButton = {
             FloatingActionButton(onClick = onNew) {
                 Icon(Icons.Default.Add, contentDescription = stringResource(R.string.action_add))
@@ -89,6 +110,8 @@ fun ListScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { padding ->
         Column(modifier = Modifier.fillMaxSize().padding(padding)) {
+            if (state.isSyncing) LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+            SyncBanners(state = state, onOpenStatus = onOpenStatus)
             SearchField(initial = state.query, onQueryChange = onQueryChange)
             CategoryFilters(selected = state.category, onSelected = onCategoryChange)
             when {
@@ -191,11 +214,54 @@ private fun ObservationRow(
             )
         },
         trailingContent = {
-            IconButton(onClick = onDelete) {
-                Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.action_delete))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                val problem = observation.syncState == SyncState.CONFLICT || observation.syncState == SyncState.ERROR
+                Icon(
+                    imageVector = observation.syncState.icon(),
+                    contentDescription = stringResource(observation.syncState.labelRes()),
+                    tint = if (problem) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                IconButton(onClick = onDelete) {
+                    Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.action_delete))
+                }
             }
         },
     )
+}
+
+@Composable
+private fun SyncBanners(state: ListUiState, onOpenStatus: () -> Unit) {
+    if (!state.isOnline) {
+        Banner(
+            text = stringResource(R.string.banner_offline),
+            icon = { Icon(Icons.Default.CloudOff, contentDescription = null) },
+            onClick = onOpenStatus,
+        )
+    }
+    if (state.conflictCount > 0) {
+        Banner(text = stringResource(R.string.banner_conflicts, state.conflictCount), onClick = onOpenStatus)
+    }
+    if (state.errorCount > 0) {
+        Banner(text = stringResource(R.string.banner_errors, state.errorCount), onClick = onOpenStatus)
+    }
+}
+
+@Composable
+private fun Banner(text: String, onClick: () -> Unit, icon: (@Composable () -> Unit)? = null) {
+    Surface(
+        color = MaterialTheme.colorScheme.secondaryContainer,
+        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+        modifier = Modifier.fillMaxWidth().clickable(onClick = onClick),
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            icon?.invoke()
+            Text(text = text, style = MaterialTheme.typography.bodyMedium)
+        }
+    }
 }
 
 @Composable

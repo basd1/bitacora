@@ -63,4 +63,27 @@
     <string name="conflict_take_theirs">Server</string>
     <string name="conflict_value_empty">(empty)</string>
     <string name="conflict_apply">Apply and sync</string>
+
+    <string name="action_sync_now">Sync now</string>
+    <string name="action_open_status">Sync status</string>
+    <string name="banner_offline">You are offline. Changes are saved on this device and will sync when the connection returns.</string>
+    <string name="banner_conflicts">Observations with conflicts to resolve: %1$d</string>
+    <string name="banner_errors">Observations that could not be synced: %1$d</string>
+    <string name="sync_state_synced">Synced</string>
+    <string name="sync_state_pending">Waiting to sync</string>
+    <string name="sync_state_conflict">Conflict, needs your decision</string>
+    <string name="sync_state_error">Sync error</string>
+
+    <string name="status_title">Sync status</string>
+    <string name="status_last_sync">Last sync: %1$s</string>
+    <string name="status_never_synced">Not synced yet</string>
+    <string name="status_pending">Waiting to sync: %1$d</string>
+    <string name="status_conflicts">Conflicts to resolve: %1$d</string>
+    <string name="status_syncing">Syncing…</string>
+    <string name="status_offline">No connection</string>
+    <string name="status_online">Connected</string>
+    <string name="status_last_error">The last attempt failed: %1$s</string>
+    <string name="status_errors_title">Observations the server rejected</string>
+    <string name="status_all_synced">Everything is synced.</string>
+    <string name="status_retry">Retry now</string>
 </resources>

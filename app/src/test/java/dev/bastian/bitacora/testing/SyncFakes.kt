@@ -2,7 +2,10 @@ package dev.bastian.bitacora.testing
 
 import dev.bastian.bitacora.data.sync.SyncRemote
 import dev.bastian.bitacora.data.sync.SyncStore
+import dev.bastian.bitacora.domain.NetworkMonitor
 import dev.bastian.bitacora.domain.SyncScheduler
+import dev.bastian.bitacora.domain.SyncStatus
+import dev.bastian.bitacora.domain.SyncStatusRepository
 import dev.bastian.bitacora.shared.BatchResponse
 import dev.bastian.bitacora.shared.ChangeDto
 import dev.bastian.bitacora.shared.ChangeResult
@@ -85,5 +88,22 @@ class FakeRemote : SyncRemote {
         failure?.let { throw it }
         pushes += changes
         return pushHandler(changes)
+    }
+}
+
+class FakeNetworkMonitor(initial: Boolean = true) : NetworkMonitor {
+    val online = MutableStateFlow(initial)
+    override val isOnline: Flow<Boolean> = online
+}
+
+class FakeSyncStatusRepository : SyncStatusRepository {
+    val current = MutableStateFlow(SyncStatus())
+    var retries = 0
+        private set
+
+    override val status: Flow<SyncStatus> = current
+
+    override suspend fun retry() {
+        retries++
     }
 }

@@ -149,4 +149,27 @@ class SyncEnginePushTest {
         assertEquals(1, remote.pushes.size)
         assertEquals(SyncState.SYNCED, dao.getById("a")?.syncState)
     }
+
+    @Test
+    fun passInterruptedBetweenBatchesResumesWithoutResendingAcceptedRecords() = runTest {
+        repeat(80) { index -> dao.upsert(entity(id = "id-$index", updatedAt = index.toLong())) }
+        var calls = 0
+        remote.pushHandler = { changes ->
+            calls++
+            // The process dies while the second batch is in flight.
+            if (calls == 2) throw IOException("killed")
+            BatchResponse(changes.map { ChangeResult(it.observation.id, ChangeStatus.ACCEPTED, 1) })
+        }
+
+        assertTrue(engine.run() is SyncResult.Failure)
+        assertEquals(50, dao.getByState(SyncState.SYNCED).size)
+        assertEquals(30, dao.getByState(SyncState.PENDING).size)
+
+        remote.acceptAll()
+        remote.pushes.clear()
+        assertEquals(SyncResult.Success, engine.run())
+
+        assertEquals(listOf(30), remote.pushes.map { it.size })
+        assertEquals(80, dao.getByState(SyncState.SYNCED).size)
+    }
 }

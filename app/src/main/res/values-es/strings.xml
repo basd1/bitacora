@@ -63,4 +63,27 @@
     <string name="conflict_take_theirs">Servidor</string>
     <string name="conflict_value_empty">(vacío)</string>
     <string name="conflict_apply">Aplicar y sincronizar</string>
+
+    <string name="action_sync_now">Sincronizar ahora</string>
+    <string name="action_open_status">Estado de sincronización</string>
+    <string name="banner_offline">Sin conexión. Los cambios se guardan en este dispositivo y se sincronizarán al volver la conexión.</string>
+    <string name="banner_conflicts">Observaciones con conflictos por resolver: %1$d</string>
+    <string name="banner_errors">Observaciones que no se pudieron sincronizar: %1$d</string>
+    <string name="sync_state_synced">Sincronizada</string>
+    <string name="sync_state_pending">Pendiente de sincronizar</string>
+    <string name="sync_state_conflict">Conflicto, requiere tu decisión</string>
+    <string name="sync_state_error">Error de sincronización</string>
+
+    <string name="status_title">Estado de sincronización</string>
+    <string name="status_last_sync">Última sincronización: %1$s</string>
+    <string name="status_never_synced">Aún no se ha sincronizado</string>
+    <string name="status_pending">Pendientes de sincronizar: %1$d</string>
+    <string name="status_conflicts">Conflictos por resolver: %1$d</string>
+    <string name="status_syncing">Sincronizando…</string>
+    <string name="status_offline">Sin conexión</string>
+    <string name="status_online">Conectado</string>
+    <string name="status_last_error">El último intento falló: %1$s</string>
+    <string name="status_errors_title">Observaciones que el servidor rechazó</string>
+    <string name="status_all_synced">Todo está sincronizado.</string>
+    <string name="status_retry">Reintentar ahora</string>
 </resources>

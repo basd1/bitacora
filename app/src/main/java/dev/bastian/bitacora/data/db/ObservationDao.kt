@@ -44,6 +44,16 @@ abstract class ObservationDao {
     @Query("UPDATE observations SET syncState = 'ERROR', errorMessage = :message WHERE id IN (:ids)")
     abstract suspend fun markError(ids: List<String>, message: String)
 
+    @Query("SELECT COUNT(*) FROM observations WHERE syncState = :state")
+    abstract fun observeCount(state: SyncState): Flow<Int>
+
+    @Query("SELECT * FROM observations WHERE syncState = 'ERROR' ORDER BY updatedAt DESC, id")
+    abstract fun observeErrors(): Flow<List<ObservationEntity>>
+
+    /** Manual retry: rejected records go back in the upload queue. */
+    @Query("UPDATE observations SET syncState = 'PENDING', errorMessage = NULL WHERE syncState = 'ERROR'")
+    abstract suspend fun resetErrors()
+
     /**
      * Reads, transforms and writes one record atomically, so a concurrent edit
      * and a sync step cannot overwrite each other. Returning null from

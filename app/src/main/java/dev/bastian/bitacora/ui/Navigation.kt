@@ -14,6 +14,7 @@ import dev.bastian.bitacora.ui.conflict.ConflictScreen
 import dev.bastian.bitacora.ui.edit.EditScreen
 import dev.bastian.bitacora.ui.list.ListScreen
 import dev.bastian.bitacora.ui.list.ListViewModel
+import dev.bastian.bitacora.ui.status.SyncStatusScreen
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 
@@ -25,6 +26,9 @@ data class EditRoute(val id: String? = null)
 
 @Serializable
 data class ConflictRoute(val id: String)
+
+@Serializable
+data object SyncStatusRoute
 
 private const val DELETED_ID_KEY = "deletedId"
 
@@ -43,6 +47,9 @@ fun BitacoraNavHost() {
                 },
                 onResolveConflict = { id -> navController.navigate(ConflictRoute(id)) },
             )
+        }
+        composable<SyncStatusRoute> {
+            SyncStatusScreen(onBack = { navController.popBackStack() })
         }
         composable<ConflictRoute> { entry ->
             ConflictScreen(
@@ -76,5 +83,7 @@ private fun ListDestination(navController: NavController, entry: NavBackStackEnt
         onDelete = viewModel::delete,
         onUndoDelete = viewModel::undoDelete,
         onDeletedPromptShown = viewModel::onDeletedPromptShown,
+        onSyncNow = viewModel::syncNow,
+        onOpenStatus = { navController.navigate(SyncStatusRoute) },
     )
 }
