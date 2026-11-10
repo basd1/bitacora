@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Bitácora</string>
+    <string name="list_title">Observaciones</string>
+    <string name="list_empty_title">Aún no hay observaciones</string>
+    <string name="list_empty_body">Las notas de campo que registres aparecerán aquí, incluso sin conexión.</string>
+</resources>

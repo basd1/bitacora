@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Bitacora</string>
+    <string name="list_title">Observations</string>
+    <string name="list_empty_title">No observations yet</string>
+    <string name="list_empty_body">Field notes you record will show up here, even without a connection.</string>
+</resources>
