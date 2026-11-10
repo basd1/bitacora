@@ -33,4 +33,24 @@
     <string name="error_title_empty">El título es obligatorio.</string>
     <string name="error_title_too_long">El título es demasiado largo (120 caracteres como máximo).</string>
     <string name="error_notes_too_long">Las notas son demasiado largas (2000 caracteres como máximo).</string>
+
+    <string name="field_photo">Foto</string>
+    <string name="photo_description">Foto de la observación</string>
+    <string name="action_add_photo">Añadir foto</string>
+    <string name="action_change_photo">Cambiar foto</string>
+    <string name="action_remove_photo">Quitar foto</string>
+    <string name="error_photo_import">No se pudo añadir la foto. Prueba con otra imagen.</string>
+
+    <string name="field_location">Ubicación</string>
+    <string name="field_latitude">Latitud</string>
+    <string name="field_longitude">Longitud</string>
+    <string name="action_use_location">Usar ubicación actual</string>
+    <string name="action_open_settings">Abrir ajustes</string>
+    <string name="error_coordinates_incomplete">Introduce latitud y longitud, o deja ambas vacías.</string>
+    <string name="error_coordinates_invalid">Las coordenadas deben ser números, por ejemplo 40.4168 y -3.7038.</string>
+    <string name="error_coordinates_range">La latitud debe estar entre -90 y 90, y la longitud entre -180 y 180.</string>
+    <string name="location_denied">Se denegó el permiso de ubicación. Aún puedes escribir las coordenadas a mano.</string>
+    <string name="location_denied_permanently">El permiso de ubicación está bloqueado. Actívalo en los ajustes de la app o escribe las coordenadas a mano.</string>
+    <string name="location_provider_disabled">La ubicación está desactivada en este dispositivo. Actívala o escribe las coordenadas a mano.</string>
+    <string name="location_unavailable">Ahora mismo no hay una posición disponible. Inténtalo de nuevo o escribe las coordenadas a mano.</string>
 </resources>

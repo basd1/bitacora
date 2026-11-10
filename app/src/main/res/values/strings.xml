@@ -33,4 +33,24 @@
     <string name="error_title_empty">The title is required.</string>
     <string name="error_title_too_long">The title is too long (120 characters at most).</string>
     <string name="error_notes_too_long">The notes are too long (2000 characters at most).</string>
+
+    <string name="field_photo">Photo</string>
+    <string name="photo_description">Photo of the observation</string>
+    <string name="action_add_photo">Add photo</string>
+    <string name="action_change_photo">Change photo</string>
+    <string name="action_remove_photo">Remove photo</string>
+    <string name="error_photo_import">The photo could not be added. Try another image.</string>
+
+    <string name="field_location">Location</string>
+    <string name="field_latitude">Latitude</string>
+    <string name="field_longitude">Longitude</string>
+    <string name="action_use_location">Use current location</string>
+    <string name="action_open_settings">Open settings</string>
+    <string name="error_coordinates_incomplete">Enter both latitude and longitude, or leave both empty.</string>
+    <string name="error_coordinates_invalid">Coordinates must be numbers, for example 40.4168 and -3.7038.</string>
+    <string name="error_coordinates_range">Latitude must be between -90 and 90, and longitude between -180 and 180.</string>
+    <string name="location_denied">Location permission was denied. You can still type the coordinates by hand.</string>
+    <string name="location_denied_permanently">Location permission is blocked. Enable it in the app settings, or type the coordinates by hand.</string>
+    <string name="location_provider_disabled">Location is turned off on this device. Turn it on, or type the coordinates by hand.</string>
+    <string name="location_unavailable">No location fix is available right now. Try again, or type the coordinates by hand.</string>
 </resources>
