@@ -6,11 +6,18 @@ The point of the project is the synchronization: a change queue, retries with ba
 
 100% Kotlin and Jetpack Compose (Material 3).
 
-> **Status: written but never compiled or run.** Gradle could not start in the environment where this code was written, so none of it has been built, unit tested, linted or run on an emulator. See [Known limitations](#known-limitations).
+> **Status:** built, unit-tested (129 tests), linted (no errors) and exercised on an Android API 33 emulator (`portfolio_phone`) and a tablet emulator (`medium_tablet`) against the in-process server. See [Known limitations](#known-limitations) for what was not checked.
 
 ## Screenshots
 
-None yet. They have to be captured on an emulator, which was not possible. Planned location: `docs/capturas/`.
+| | |
+|---|---|
+| ![Empty list](docs/capturas/hito1-lista.png) | ![Row pending upload, server down](docs/capturas/hito3-pendiente-sin-servidor.png) |
+| Empty state | A note created with the server down stays `PENDING` (cloud-upload icon) |
+| ![Location denied](docs/capturas/hito2-ubicacion-denegada.png) | ![Sync status with error](docs/capturas/hito5-estado-con-error.png) |
+| Permission denied: manual entry still works | Sync status screen with the server down |
+
+Also in `docs/capturas/`: location filled from `adb emu geo fix`, photo copy, sync status after recovery, and the two-pane layout on `medium_tablet` in landscape (`hito6-tablet-dospaneles.png`).
 
 ## Modules
 
@@ -93,7 +100,7 @@ Uploads are idempotent. The server answers a replayed change that matches what i
 - **Framework `LocationManager`** instead of Play Services, as the guide asks. Permission denial and permanent denial both leave manual coordinate entry available.
 - **Observation date is set at creation** and is not editable in the form; it is still synced and merged like any other field.
 - **Two-pane layout from 600 dp wide** (`LocalConfiguration`), list on the left and editor on the right; below that, separate screens.
-- **Koin for dependency injection.** The guide proposes Hilt, but the project was switched to Koin 4.2.2 (with `koin-androidx-workmanager`) while this code was being written, and that choice was kept. The Ktor client engine is CIO for the same reason. Neither version is in the guide's tables; see `VERSIONES.md`.
+- **Koin for dependency injection.** The guide proposes Hilt, but Koin 4.2.2 (with `koin-androidx-workmanager`) was chosen as a Kotlin-first DI library with no annotation processing. Both choices favour Kotlin-first libraries: the Ktor client uses the CIO engine, so there is no OkHttp or Retrofit. The Koin version is not in the guide's tables; see `VERSIONES.md`.
 - **No new libraries beyond the guide**, except `kotlin-test` (ships with Kotlin), `logback` for server logging and `androidx.test:core-ktx` for Robolectric tests.
 
 ## Tests
@@ -108,11 +115,10 @@ Unit tests under `app/src/test` (JUnit 4, Robolectric for Room and WorkManager, 
 
 ## Known limitations
 
-- **Never compiled, tested, linted or run.** The Gradle client failed to start in the environment where this was written (`java.io.IOException: Unable to establish loopback connection`; see `BLOQUEOS.md`). All code was written by hand, reviewing imports, the versions in the project's version catalog and API signatures, but there may be compile errors, test failures or lint errors. Treat milestones 1 to 6 as "code written, not compiled or tested".
-- No screenshots and nothing verified on an emulator or device (including the photo picker, the location permission flows, the two-pane layout on `medium_tablet`, and force-stopping the app during an upload).
+- Verified on emulators only: the conflict resolution screen was exercised by unit and in-process integration tests, not by hand on a device; two real devices on a LAN were not tried. Killing the process during an upload (`am force-stop`) was done on the emulator and the app recovered without errors, but the no-duplicates guarantee is demonstrated by the idempotent-replay tests.
 - The server keeps data in memory only; restarting it loses everything, and clients with a stored cursor then see an empty server. Not handled.
 - No authentication or users; photos are never uploaded; no maps (all out of scope by design).
 - Tombstones of deleted records are never purged.
 - Search treats `%` and `_` as wildcards (SQL `LIKE` without escaping).
 - Accessibility is basic: content descriptions, headings and live regions for banners, no custom TalkBack testing.
-- Dependency versions marked as suggested in the project guide (Koin, Work, DataStore, serialization) were not resolved against a repository from this machine.
+- Lint reports four warnings (`UseKtx`, `ObsoleteSdkInt`, `ConfigurationScreenWidthHeight`, `DataExtractionRules`), none of them errors.
