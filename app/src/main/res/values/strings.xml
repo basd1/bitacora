@@ -1,7 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Bitacora</string>
+
     <string name="list_title">Observations</string>
     <string name="list_empty_title">No observations yet</string>
     <string name="list_empty_body">Field notes you record will show up here, even without a connection.</string>
+    <string name="list_no_results_title">No matching observations</string>
+    <string name="list_no_results_body">Try a different search or clear the category filter.</string>
+    <string name="search_hint">Search observations</string>
+    <string name="filter_all">All</string>
+    <string name="row_subtitle">%1$s · %2$s</string>
+
+    <string name="category_fauna">Fauna</string>
+    <string name="category_flora">Flora</string>
+    <string name="category_terrain">Terrain</string>
+    <string name="category_weather">Weather</string>
+    <string name="category_other">Other</string>
+
+    <string name="action_add">Add observation</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_undo">Undo</string>
+    <string name="action_save">Save</string>
+    <string name="action_back">Back</string>
+    <string name="action_clear_search">Clear search</string>
+    <string name="observation_deleted">Observation deleted</string>
+
+    <string name="edit_title_new">New observation</string>
+    <string name="edit_title_existing">Edit observation</string>
+    <string name="field_title">Title</string>
+    <string name="field_notes">Notes</string>
+    <string name="field_category">Category</string>
+    <string name="error_title_empty">The title is required.</string>
+    <string name="error_title_too_long">The title is too long (120 characters at most).</string>
+    <string name="error_notes_too_long">The notes are too long (2000 characters at most).</string>
 </resources>

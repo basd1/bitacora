@@ -1,7 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Bitácora</string>
+
     <string name="list_title">Observaciones</string>
     <string name="list_empty_title">Aún no hay observaciones</string>
     <string name="list_empty_body">Las notas de campo que registres aparecerán aquí, incluso sin conexión.</string>
+    <string name="list_no_results_title">Ninguna observación coincide</string>
+    <string name="list_no_results_body">Prueba con otra búsqueda o quita el filtro de categoría.</string>
+    <string name="search_hint">Buscar observaciones</string>
+    <string name="filter_all">Todas</string>
+    <string name="row_subtitle">%1$s · %2$s</string>
+
+    <string name="category_fauna">Fauna</string>
+    <string name="category_flora">Flora</string>
+    <string name="category_terrain">Terreno</string>
+    <string name="category_weather">Clima</string>
+    <string name="category_other">Otro</string>
+
+    <string name="action_add">Añadir observación</string>
+    <string name="action_delete">Eliminar</string>
+    <string name="action_undo">Deshacer</string>
+    <string name="action_save">Guardar</string>
+    <string name="action_back">Volver</string>
+    <string name="action_clear_search">Borrar búsqueda</string>
+    <string name="observation_deleted">Observación eliminada</string>
+
+    <string name="edit_title_new">Nueva observación</string>
+    <string name="edit_title_existing">Editar observación</string>
+    <string name="field_title">Título</string>
+    <string name="field_notes">Notas</string>
+    <string name="field_category">Categoría</string>
+    <string name="error_title_empty">El título es obligatorio.</string>
+    <string name="error_title_too_long">El título es demasiado largo (120 caracteres como máximo).</string>
+    <string name="error_notes_too_long">Las notas son demasiado largas (2000 caracteres como máximo).</string>
 </resources>
