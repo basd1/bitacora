@@ -33,7 +33,7 @@ class ListViewModelTest {
     private val statusRepository = FakeSyncStatusRepository()
     private val network = FakeNetworkMonitor()
     private val scheduler = FakeSyncScheduler()
-    private val viewModel = ListViewModel(repository, statusRepository, network, scheduler)
+    private val viewModel by lazy { ListViewModel(repository, statusRepository, network, scheduler) }
 
     @Test
     fun showsAllObservationsOnceLoaded() = runTest {
