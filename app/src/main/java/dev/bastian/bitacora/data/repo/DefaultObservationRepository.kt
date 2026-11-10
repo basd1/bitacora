@@ -10,6 +10,7 @@ import dev.bastian.bitacora.domain.ListFilter
 import dev.bastian.bitacora.domain.Observation
 import dev.bastian.bitacora.domain.ObservationDraft
 import dev.bastian.bitacora.domain.ObservationRepository
+import dev.bastian.bitacora.domain.SyncScheduler
 import dev.bastian.bitacora.domain.SyncState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -18,6 +19,7 @@ class DefaultObservationRepository(
     private val dao: ObservationDao,
     private val clock: Clock,
     private val ids: IdGenerator,
+    private val scheduler: SyncScheduler,
 ) : ObservationRepository {
 
     override fun observeAll(filter: ListFilter): Flow<List<Observation>> =
@@ -35,6 +37,7 @@ class DefaultObservationRepository(
         dao.update(id) { existing ->
             if (existing == null) draft.toNewEntity(id, now) else existing.applyDraft(draft, now)
         }
+        scheduler.requestSync()
         return id
     }
 
@@ -43,6 +46,7 @@ class DefaultObservationRepository(
         dao.update(id) { existing ->
             if (existing == null || existing.deleted) existing else existing.markChanged(now, deleted = true)
         }
+        scheduler.requestSync()
     }
 
     override suspend fun restore(id: String) {
@@ -50,6 +54,7 @@ class DefaultObservationRepository(
         dao.update(id) { existing ->
             if (existing == null || !existing.deleted) existing else existing.markChanged(now, deleted = false)
         }
+        scheduler.requestSync()
     }
 }
 

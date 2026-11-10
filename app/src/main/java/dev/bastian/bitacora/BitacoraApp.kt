@@ -3,6 +3,7 @@ package dev.bastian.bitacora
 import android.app.Application
 import dev.bastian.bitacora.di.appModules
 import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.workmanager.koin.workManagerFactory
 import org.koin.core.context.startKoin
 
 class BitacoraApp : Application() {
@@ -10,6 +11,8 @@ class BitacoraApp : Application() {
         super.onCreate()
         startKoin {
             androidContext(this@BitacoraApp)
+            // Initializes WorkManager with a worker factory that builds workers through Koin.
+            workManagerFactory()
             modules(appModules)
         }
     }

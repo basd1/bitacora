@@ -9,6 +9,7 @@ import dev.bastian.bitacora.domain.ListFilter
 import dev.bastian.bitacora.domain.ObservationDraft
 import dev.bastian.bitacora.domain.SyncState
 import dev.bastian.bitacora.testing.FakeClock
+import dev.bastian.bitacora.testing.FakeSyncScheduler
 import dev.bastian.bitacora.testing.SequentialIds
 import dev.bastian.bitacora.testing.entity
 import dev.bastian.bitacora.testing.inMemoryDatabase
@@ -29,12 +30,13 @@ class ObservationRepositoryTest {
     private val context: Context = ApplicationProvider.getApplicationContext()
     private lateinit var database: BitacoraDatabase
     private val clock = FakeClock(1_000L)
+    private val scheduler = FakeSyncScheduler()
     private lateinit var repository: DefaultObservationRepository
 
     @Before
     fun setUp() {
         database = inMemoryDatabase(context)
-        repository = DefaultObservationRepository(database.observationDao(), clock, SequentialIds())
+        repository = DefaultObservationRepository(database.observationDao(), clock, SequentialIds(), scheduler)
     }
 
     @After
@@ -123,5 +125,13 @@ class ObservationRepositoryTest {
         repository.save(draft(title = "Oak").copy(category = Category.FLORA))
         val result = repository.observeAll(ListFilter(category = Category.FLORA)).first()
         assertEquals(listOf("Oak"), result.map { it.title })
+    }
+
+    @Test
+    fun everyLocalChangeRequestsASync() = runTest {
+        val id = repository.save(draft())
+        repository.delete(id)
+        repository.restore(id)
+        assertEquals(3, scheduler.requests)
     }
 }
