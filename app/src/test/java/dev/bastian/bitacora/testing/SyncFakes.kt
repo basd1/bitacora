@@ -60,8 +60,19 @@ class FakeRemote : SyncRemote {
         private set
     var failure: Exception? = null
     var pullResponse = PullResponse(emptyList(), 0)
-    var pushHandler: suspend (List<ChangeDto>) -> BatchResponse = { changes ->
-        BatchResponse(changes.map { ChangeResult(it.observation.id, ChangeStatus.ACCEPTED, 1L) })
+    var pushHandler: suspend (List<ChangeDto>) -> BatchResponse = acceptAllHandler(1L)
+
+    fun acceptAll(version: Long = 1L) {
+        pushHandler = acceptAllHandler(version)
+    }
+
+    /** The server answers pushes with no results, so records stay PENDING. */
+    fun ignorePushes() {
+        pushHandler = { BatchResponse(emptyList()) }
+    }
+
+    private fun acceptAllHandler(version: Long): suspend (List<ChangeDto>) -> BatchResponse = { changes ->
+        BatchResponse(changes.map { ChangeResult(it.observation.id, ChangeStatus.ACCEPTED, version) })
     }
 
     override suspend fun pull(since: Long): PullResponse {

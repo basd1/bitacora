@@ -22,4 +22,10 @@ interface ObservationRepository {
     /** Soft delete: the record stays so the deletion can be synced and undone. */
     suspend fun delete(id: String)
     suspend fun restore(id: String)
+
+    /** The local, remote and base versions of a record in conflict, or null if it is not in conflict. */
+    suspend fun getConflict(id: String): ConflictDetails?
+
+    /** Replaces the record's content with the user's resolution and queues it for upload. */
+    suspend fun resolveConflict(id: String, resolved: SyncableFields)
 }

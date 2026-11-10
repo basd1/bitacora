@@ -1,11 +1,13 @@
 package dev.bastian.bitacora.testing
 
 import dev.bastian.bitacora.domain.Category
+import dev.bastian.bitacora.domain.ConflictDetails
 import dev.bastian.bitacora.domain.ListFilter
 import dev.bastian.bitacora.domain.Observation
 import dev.bastian.bitacora.domain.ObservationDraft
 import dev.bastian.bitacora.domain.ObservationRepository
 import dev.bastian.bitacora.domain.SyncState
+import dev.bastian.bitacora.domain.SyncableFields
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -16,6 +18,8 @@ class FakeObservationRepository : ObservationRepository {
     private val deletedIds = MutableStateFlow<Set<String>>(emptySet())
 
     val savedDrafts = mutableListOf<ObservationDraft>()
+    var conflict: ConflictDetails? = null
+    val resolutions = mutableListOf<Pair<String, SyncableFields>>()
     private var counter = 0
 
     fun seed(vararg observations: Observation) {
@@ -63,6 +67,12 @@ class FakeObservationRepository : ObservationRepository {
 
     override suspend fun restore(id: String) {
         deletedIds.value = deletedIds.value - id
+    }
+
+    override suspend fun getConflict(id: String): ConflictDetails? = conflict?.takeIf { it.id == id }
+
+    override suspend fun resolveConflict(id: String, resolved: SyncableFields) {
+        resolutions += id to resolved
     }
 }
 

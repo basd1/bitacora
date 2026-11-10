@@ -25,6 +25,7 @@ import dev.bastian.bitacora.domain.LocationProvider
 import dev.bastian.bitacora.domain.ObservationRepository
 import dev.bastian.bitacora.domain.PhotoStorage
 import dev.bastian.bitacora.domain.SyncScheduler
+import dev.bastian.bitacora.ui.conflict.ConflictViewModel
 import dev.bastian.bitacora.ui.edit.EditViewModel
 import dev.bastian.bitacora.ui.list.ListViewModel
 import io.ktor.client.HttpClient
@@ -69,6 +70,7 @@ val syncModule = module {
 val uiModule = module {
     viewModelOf(::ListViewModel)
     viewModelOf(::EditViewModel)
+    viewModelOf(::ConflictViewModel)
 }
 
 val appModules = listOf(dataModule, syncModule, uiModule)

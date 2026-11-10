@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import dev.bastian.bitacora.ui.conflict.ConflictScreen
 import dev.bastian.bitacora.ui.edit.EditScreen
 import dev.bastian.bitacora.ui.list.ListScreen
 import dev.bastian.bitacora.ui.list.ListViewModel
@@ -21,6 +22,9 @@ data object ListRoute
 
 @Serializable
 data class EditRoute(val id: String? = null)
+
+@Serializable
+data class ConflictRoute(val id: String)
 
 private const val DELETED_ID_KEY = "deletedId"
 
@@ -37,6 +41,13 @@ fun BitacoraNavHost() {
                     navController.previousBackStackEntry?.savedStateHandle?.set(DELETED_ID_KEY, id)
                     navController.popBackStack()
                 },
+                onResolveConflict = { id -> navController.navigate(ConflictRoute(id)) },
+            )
+        }
+        composable<ConflictRoute> { entry ->
+            ConflictScreen(
+                id = entry.toRoute<ConflictRoute>().id,
+                onClose = { navController.popBackStack() },
             )
         }
     }

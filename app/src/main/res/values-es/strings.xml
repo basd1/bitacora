@@ -53,4 +53,14 @@
     <string name="location_denied_permanently">El permiso de ubicación está bloqueado. Actívalo en los ajustes de la app o escribe las coordenadas a mano.</string>
     <string name="location_provider_disabled">La ubicación está desactivada en este dispositivo. Actívala o escribe las coordenadas a mano.</string>
     <string name="location_unavailable">Ahora mismo no hay una posición disponible. Inténtalo de nuevo o escribe las coordenadas a mano.</string>
+
+    <string name="field_observed_at">Observada el</string>
+    <string name="conflict_banner_body">Esta observación se cambió en otro dispositivo y choca con tu edición. Elige qué valores conservar.</string>
+    <string name="action_resolve_conflict">Resolver conflicto</string>
+    <string name="conflict_title">Resolver conflicto</string>
+    <string name="conflict_intro">Este dispositivo y el servidor cambiaron los campos siguientes. Elige el valor que se queda en cada uno. El resto se combinó automáticamente.</string>
+    <string name="conflict_keep_mine">Este dispositivo</string>
+    <string name="conflict_take_theirs">Servidor</string>
+    <string name="conflict_value_empty">(vacío)</string>
+    <string name="conflict_apply">Aplicar y sincronizar</string>
 </resources>

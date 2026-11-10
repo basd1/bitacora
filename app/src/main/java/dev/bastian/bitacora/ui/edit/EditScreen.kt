@@ -26,6 +26,9 @@ import androidx.compose.material.icons.filled.AddPhotoAlternate
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.MyLocation
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
@@ -56,6 +59,7 @@ import coil.request.ImageRequest
 import dev.bastian.bitacora.R
 import dev.bastian.bitacora.domain.Category
 import dev.bastian.bitacora.domain.CoordinateError
+import dev.bastian.bitacora.domain.SyncState
 import dev.bastian.bitacora.domain.TitleError
 import dev.bastian.bitacora.ui.common.findActivity
 import dev.bastian.bitacora.ui.common.labelRes
@@ -74,6 +78,7 @@ fun EditScreen(
     id: String?,
     onClose: () -> Unit,
     onDeleted: (String) -> Unit,
+    onResolveConflict: (String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: EditViewModel = koinViewModel(),
 ) {
@@ -129,6 +134,7 @@ fun EditScreen(
             EditForm(
                 state = state,
                 viewModel = viewModel,
+                onResolveConflict = { id?.let(onResolveConflict) },
                 modifier = Modifier.padding(padding),
             )
         }
@@ -136,7 +142,12 @@ fun EditScreen(
 }
 
 @Composable
-private fun EditForm(state: EditUiState, viewModel: EditViewModel, modifier: Modifier = Modifier) {
+private fun EditForm(
+    state: EditUiState,
+    viewModel: EditViewModel,
+    onResolveConflict: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -145,6 +156,9 @@ private fun EditForm(state: EditUiState, viewModel: EditViewModel, modifier: Mod
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
+        if (state.syncState == SyncState.CONFLICT) {
+            ConflictBanner(onResolve = onResolveConflict)
+        }
         OutlinedTextField(
             value = state.title,
             onValueChange = viewModel::onTitleChange,
@@ -318,3 +332,20 @@ private fun hasLocationPermission(context: Context): Boolean = LOCATION_PERMISSI
 }
 
 private val PHOTO_HEIGHT = 200.dp
+
+@Composable
+private fun ConflictBanner(onResolve: () -> Unit) {
+    Card(
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(
+                text = stringResource(R.string.conflict_banner_body),
+                color = MaterialTheme.colorScheme.onErrorContainer,
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            Button(onClick = onResolve) { Text(stringResource(R.string.action_resolve_conflict)) }
+        }
+    }
+}

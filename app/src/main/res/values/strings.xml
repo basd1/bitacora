@@ -53,4 +53,14 @@
     <string name="location_denied_permanently">Location permission is blocked. Enable it in the app settings, or type the coordinates by hand.</string>
     <string name="location_provider_disabled">Location is turned off on this device. Turn it on, or type the coordinates by hand.</string>
     <string name="location_unavailable">No location fix is available right now. Try again, or type the coordinates by hand.</string>
+
+    <string name="field_observed_at">Observed at</string>
+    <string name="conflict_banner_body">This observation was changed on another device in a way that clashes with your edit. Choose which values to keep.</string>
+    <string name="action_resolve_conflict">Resolve conflict</string>
+    <string name="conflict_title">Resolve conflict</string>
+    <string name="conflict_intro">Both this device and the server changed the fields below. Pick the value to keep for each one. Everything else was merged automatically.</string>
+    <string name="conflict_keep_mine">This device</string>
+    <string name="conflict_take_theirs">Server</string>
+    <string name="conflict_value_empty">(empty)</string>
+    <string name="conflict_apply">Apply and sync</string>
 </resources>

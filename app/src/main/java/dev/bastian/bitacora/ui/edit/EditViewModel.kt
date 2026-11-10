@@ -10,11 +10,13 @@ import dev.bastian.bitacora.domain.Observation
 import dev.bastian.bitacora.domain.ObservationDraft
 import dev.bastian.bitacora.domain.ObservationRepository
 import dev.bastian.bitacora.domain.PhotoStorage
+import dev.bastian.bitacora.domain.SyncState
 import dev.bastian.bitacora.domain.TitleError
 import dev.bastian.bitacora.domain.formatCoordinate
 import dev.bastian.bitacora.domain.notesTooLong
 import dev.bastian.bitacora.domain.parseCoordinates
 import dev.bastian.bitacora.domain.validateTitle
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -38,6 +40,8 @@ data class EditUiState(
     val coordinatesError: CoordinateError? = null,
     val photoError: Boolean = false,
     val locationStatus: LocationStatus = LocationStatus.IDLE,
+    /** Sync state of the stored record; null for a new one. */
+    val syncState: SyncState? = null,
     val isSaving: Boolean = false,
     val saved: Boolean = false,
     val deletedId: String? = null,
@@ -55,6 +59,7 @@ class EditViewModel(
     private var loaded = false
     private var loadedId: String? = null
     private var original: Observation? = null
+    private var syncStateJob: Job? = null
 
     /** Photos copied into internal storage during this editing session and not yet committed. */
     private val importedPhotos = mutableListOf<String>()
@@ -63,6 +68,7 @@ class EditViewModel(
     fun load(id: String?) {
         if (loaded && loadedId == id) return
         discardImportedPhotos()
+        syncStateJob?.cancel()
         loaded = true
         loadedId = id
         original = null
@@ -87,7 +93,18 @@ class EditViewModel(
                     latitude = observation.latitude?.let(::formatCoordinate).orEmpty(),
                     longitude = observation.longitude?.let(::formatCoordinate).orEmpty(),
                     photoPath = observation.photoPath,
+                    syncState = observation.syncState,
                 )
+            }
+            if (observation != null) watchSyncState(id)
+        }
+    }
+
+    /** Keeps the conflict banner current while the form is open, for example after resolving. */
+    private fun watchSyncState(id: String) {
+        syncStateJob = viewModelScope.launch {
+            repository.observe(id).collect { current ->
+                _uiState.update { it.copy(syncState = current?.syncState) }
             }
         }
     }

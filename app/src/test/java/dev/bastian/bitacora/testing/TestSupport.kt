@@ -26,6 +26,12 @@ class SequentialIds : IdGenerator {
     override fun newId(): String = "id-${++counter}"
 }
 
+/** Ids that stay unique across several simulated devices. */
+class PrefixedIds(private val prefix: String) : IdGenerator {
+    private var counter = 0
+    override fun newId(): String = "$prefix-${++counter}"
+}
+
 @OptIn(ExperimentalCoroutinesApi::class)
 class MainDispatcherRule(
     private val dispatcher: TestDispatcher = UnconfinedTestDispatcher(),
